@@ -10,7 +10,7 @@ public class InteractHandler : MonoBehaviour
         string entityName = go.name;
         Debug.Log("Interacting with: " + entityName);
 
-        if (entityName.Equals("Tree"))
+        if (entityName.Contains("Tree"))
             Chop(go);
     }
 
@@ -22,10 +22,13 @@ public class InteractHandler : MonoBehaviour
             return;
         }
 
-        // Creating the log and setting its location to the location of the tree
+        // Creating the log prefab and setting its location to the location of the tree
         GameObject log = ItemFactory.CreateItem("Log");
         ItemFactory.SetLocation(log, tree.transform.position);
-        Instantiate(log);
+
+        // Instantiating a log instance and setting it inside of the chunk it spawned in
+        GameObject logObject = Instantiate(log) as GameObject;
+        ItemFactory.SetParent(logObject, tree.transform.parent.gameObject);
 
         Destroy(tree);
     }

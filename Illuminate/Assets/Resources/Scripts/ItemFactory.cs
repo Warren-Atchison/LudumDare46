@@ -21,4 +21,9 @@ public class ItemFactory : MonoBehaviour
     {
         go.transform.position = newLocation;
     }
+
+    public static void SetParent(GameObject child, GameObject parent)
+    {
+        child.transform.parent = parent.transform;
+    }
 }
