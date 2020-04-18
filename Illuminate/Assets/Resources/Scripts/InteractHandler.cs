@@ -10,23 +10,35 @@ public class InteractHandler : MonoBehaviour
         string entityName = go.name;
         Debug.Log("Interacting with: " + entityName);
 
-        if (entityName.Equals("Tree"))
+        if (entityName.Contains("Tree"))
             Chop(go);
     }
 
     private static void Chop(GameObject tree)
     {
-        if (tree.GetComponent<DeadTree>().treeHealth > 0)
-        {
-            tree.GetComponent<DeadTree>().treeHealth--;
-            return;
-        }
-
-        // Creating the log and setting its location to the location of the tree
+        // Creating the log prefab and setting its location to the location of the tree
         GameObject log = ItemFactory.CreateItem("Log");
         ItemFactory.SetLocation(log, tree.transform.position);
-        Instantiate(log);
+
+        // Instantiating a log instance and setting it inside of the chunk it spawned in
+        GameObject logObject = Instantiate(log) as GameObject;
+        ItemFactory.SetParent(logObject, tree.transform.parent.gameObject);
 
         Destroy(tree);
+    }
+
+    public static float GetHealth(GameObject go)
+    {
+        return go.GetComponent<Interactable>().GetHealth();
+    }
+
+    public static float GetProgress(GameObject go)
+    {
+        return go.GetComponent<Interactable>().GetProgress();
+    }
+
+    public static void SetProgress(GameObject go, float progress)
+    {
+        go.GetComponent<Interactable>().SetProgress(progress);
     }
 }

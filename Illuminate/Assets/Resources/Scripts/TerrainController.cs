@@ -11,6 +11,8 @@ public class TerrainController : MonoBehaviour
     private int prevChunkNum = 0;
     private Dictionary<int, GameObject> chunks;
 
+    private GameObject terrainParent;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,8 +23,15 @@ public class TerrainController : MonoBehaviour
         else if (terrainController != this)
             Destroy(gameObject);
 
-        // Generate base chunks
+        // Generate chunks dictionary
         chunks = new Dictionary<int, GameObject>();
+
+        // Creating a parent game object to place all terrain objects in
+        terrainParent = new GameObject();
+        terrainParent.name = "Terrain";
+
+        // Generate static spawn chunks
+        GenerateSpawn("Forest");
 
         // Sets TerrainController to DontDestroyOnLoad so that it won't be destroyed when reloading a scene
         DontDestroyOnLoad(gameObject);
@@ -39,6 +48,28 @@ public class TerrainController : MonoBehaviour
         prevChunkNum = chunkNum;
     }
 
+    private void GenerateSpawn(string environment)
+    {
+        int[] spawnChunks = { -2, -1, 0, 1, 2 };
+        foreach(int chunkNum in spawnChunks)
+        {
+            GameObject chunk = ItemFactory.CreateItem("Ground", chunkNum.ToString());
+            Vector3 location = new Vector3(chunkNum * 16, groundHeight);
+            ItemFactory.SetLocation(chunk, location);
+
+            GameObject chunkInstance = Instantiate(chunk) as GameObject;
+            ItemFactory.SetParent(chunkInstance, terrainParent);
+
+            if (chunkNum == 0)
+            {
+                if(environment.Equals("Forest"))
+                    Populate(chunkInstance, "House");
+            }
+
+            chunks.Add(chunkNum, chunkInstance);
+        }
+    }
+
     private void GenerateChunk(int chunkNum)
     {
         // Player is moving left
@@ -50,7 +81,11 @@ public class TerrainController : MonoBehaviour
                 GameObject leftGround = ItemFactory.CreateItem("Ground", (chunkNum - 2).ToString());
                 Vector3 newLocation = new Vector3((chunkNum - 2) * 16, groundHeight);
                 ItemFactory.SetLocation(leftGround, newLocation);
-                chunks.Add(chunkNum - 2, Instantiate(leftGround));
+
+                GameObject goLeftGround = Instantiate(leftGround) as GameObject;
+                ItemFactory.SetParent(goLeftGround, terrainParent);
+                Populate(goLeftGround);
+                chunks.Add(chunkNum - 2, goLeftGround);
             }
             else
             {
@@ -59,7 +94,6 @@ public class TerrainController : MonoBehaviour
 
             Vector3 destroyLocation = new Vector3((chunkNum + 3) * 16, groundHeight);
             Collider2D collider = Physics2D.OverlapCircle(destroyLocation, 2);
-            Debug.Log(destroyLocation.ToString() + " : " + collider.ToString());
             if (collider != null)
                 collider.gameObject.SetActive(false);
         }
@@ -73,7 +107,11 @@ public class TerrainController : MonoBehaviour
                 GameObject rightGround = ItemFactory.CreateItem("Ground", (chunkNum + 2).ToString());
                 Vector3 newLocation = new Vector3((chunkNum + 2) * 16, groundHeight);
                 ItemFactory.SetLocation(rightGround, newLocation);
-                chunks.Add(chunkNum + 2, Instantiate(rightGround));
+
+                GameObject goRightGround = Instantiate(rightGround) as GameObject;
+                ItemFactory.SetParent(goRightGround, terrainParent);
+                Populate(goRightGround);
+                chunks.Add(chunkNum + 2, goRightGround);
             }
             else
             {
@@ -82,17 +120,32 @@ public class TerrainController : MonoBehaviour
 
             Vector3 destroyLocation = new Vector3((chunkNum - 3) * 16, groundHeight);
             Collider2D collider = Physics2D.OverlapCircle(destroyLocation, 2);
-            Debug.Log(destroyLocation.ToString() + " : " + collider.ToString());
             if (collider != null)
                 collider.gameObject.SetActive(false);
         }
-
-        PrintDict();
     }
 
-    private void PrintDict()
+    private void Populate(GameObject parent)
     {
-        foreach (KeyValuePair<int, GameObject> kv in chunks)
-            Debug.Log(kv.Key + " : " + kv.Value.name);
+        GameObject tree = ItemFactory.CreateItem("Tree", "Tree");
+        Vector3 treePos = new Vector3(parent.transform.position.x, parent.transform.position.y + 7.5f);
+        ItemFactory.SetLocation(tree, treePos);
+
+        GameObject treeAsChild = Instantiate(tree) as GameObject;
+        ItemFactory.SetParent(treeAsChild, parent);
+    }
+
+    private void Populate(GameObject parent, string prefab)
+    {
+        GameObject gameObject = ItemFactory.CreateItem(prefab);
+
+        float parentHeight = parent.GetComponent<SpriteRenderer>().bounds.size.y;
+        float childHeight = gameObject.GetComponent<SpriteRenderer>().bounds.size.y;
+
+        Vector3 spawnPos = new Vector3(parent.transform.position.x, parent.transform.position.y + ((parentHeight/2) + (childHeight/2)));
+        ItemFactory.SetLocation(gameObject, spawnPos);
+
+        GameObject setAsChild = Instantiate(gameObject) as GameObject;
+        ItemFactory.SetParent(setAsChild, parent);
     }
 }
