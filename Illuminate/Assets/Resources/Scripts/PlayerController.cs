@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isGrounded = Physics2D.OverlapArea(new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f),
+        isGrounded = Physics2D.OverlapArea(new Vector2(transform.position.x - 1.5f, transform.position.y - 1.5f),
             new Vector2(transform.position.x + 0.5f, transform.position.y + 0.51f), groundLayers);
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -41,14 +41,14 @@ public class PlayerController : MonoBehaviour
             rb.velocity = computeVelocity(-1f);
         else if (Input.GetKey(KeyCode.D))
             rb.velocity = computeVelocity(1f);
-        else
+        else if (isGrounded)
             rb.velocity = computeVelocity(0f);
 
         // Inventory slot switching
         if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            Debug.Log(++curInvSlot);
+            //Debug.Log(++curInvSlot);
         if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            Debug.Log(--curInvSlot);
+            //Debug.Log(--curInvSlot);
 
         // Interact
         if (Input.GetKeyDown(KeyCode.E) && collisionObject != null)

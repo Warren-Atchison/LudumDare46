@@ -10,6 +10,13 @@ public class ItemFactory : MonoBehaviour
         return output;
     }
 
+    public static GameObject CreateItem(string prefabName, string gameObjectName)
+    {
+        GameObject output = Resources.Load<GameObject>("Prefabs/" + prefabName);
+        output.name = gameObjectName;
+        return output;
+    }
+
     public static void SetLocation(GameObject go, Vector3 newLocation)
     {
         go.transform.position = newLocation;
