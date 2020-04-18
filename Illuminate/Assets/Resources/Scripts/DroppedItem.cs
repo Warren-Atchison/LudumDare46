@@ -22,6 +22,8 @@ public class DroppedItem : MonoBehaviour
     {
         if (touchingGround == true)
             rigidbody2D.constraints = RigidbodyConstraints2D.FreezePosition;
+        //Test comment
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
