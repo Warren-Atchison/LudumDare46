@@ -46,14 +46,14 @@ public class PlayerController : MonoBehaviour
 
         // Inventory slot switching
         if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            //Debug.Log(++curInvSlot);
+            Debug.Log(++curInvSlot);
         if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            //Debug.Log(--curInvSlot);
+            Debug.Log(--curInvSlot);
 
         // Interact
         if (Input.GetKeyDown(KeyCode.E) && collisionObject != null)
             InteractHandler.Interact(collisionObject);
-    }
+}
 
     Vector2 computeVelocity(float axis = 0f)
     {
@@ -75,11 +75,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Enter: " + collision.gameObject.name);
         collisionObject = collision.gameObject;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        Debug.Log("Exit: " + collision.gameObject.name);
         collisionObject = null;
     }
 }
