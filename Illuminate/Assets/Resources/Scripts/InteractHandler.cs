@@ -16,12 +16,6 @@ public class InteractHandler : MonoBehaviour
 
     private static void Chop(GameObject tree)
     {
-        if (tree.GetComponent<DeadTree>().treeHealth > 0)
-        {
-            tree.GetComponent<DeadTree>().treeHealth--;
-            return;
-        }
-
         // Creating the log prefab and setting its location to the location of the tree
         GameObject log = ItemFactory.CreateItem("Log");
         ItemFactory.SetLocation(log, tree.transform.position);
@@ -31,5 +25,20 @@ public class InteractHandler : MonoBehaviour
         ItemFactory.SetParent(logObject, tree.transform.parent.gameObject);
 
         Destroy(tree);
+    }
+
+    public static float GetHealth(GameObject go)
+    {
+        return go.GetComponent<Interactable>().GetHealth();
+    }
+
+    public static float GetProgress(GameObject go)
+    {
+        return go.GetComponent<Interactable>().GetProgress();
+    }
+
+    public static void SetProgress(GameObject go, float progress)
+    {
+        go.GetComponent<Interactable>().SetProgress(progress);
     }
 }

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeadTree : MonoBehaviour
+public class DeadTree : Interactable
 {
     public GameObject chopText;
-    public int treeHealth = 3;
+    public float treeHealth;
+    public float progress;
 
     // Start is called before the first frame update
     void Start()
@@ -35,5 +36,20 @@ public class DeadTree : MonoBehaviour
         {
             chopText.SetActive(false);
         }
+    }
+
+    override public float GetHealth()
+    {
+        return treeHealth;
+    }
+
+    override public float GetProgress()
+    {
+        return progress;
+    }
+
+    public override void SetProgress(float progress)
+    {
+        this.progress = progress;
     }
 }
