@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class Log : Item
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void PickUp()
     {
-        
+        Destroy(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Drop()
     {
-        
+        base.Drop("Log");
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

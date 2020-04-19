@@ -2,32 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeadTree : MonoBehaviour
+public class DeadTree : Interactable
 {
     public GameObject chopText;
-    public int treeHealth = 3;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public float chopTime;
+    public float progress;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameObject go = collision.gameObject;
-        if (go.name.Equals("Player"))
-        {
-            chopText.SetActive(true);
 
-        }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         GameObject go = collision.gameObject;
@@ -35,5 +20,20 @@ public class DeadTree : MonoBehaviour
         {
             chopText.SetActive(false);
         }
+    }
+
+    override public float GetInteractTime()
+    {
+        return chopTime;
+    }
+
+    override public float GetProgress()
+    {
+        return progress;
+    }
+
+    public override void SetProgress(float progress)
+    {
+        this.progress = progress;
     }
 }

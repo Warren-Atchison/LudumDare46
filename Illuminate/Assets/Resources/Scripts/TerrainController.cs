@@ -9,7 +9,9 @@ public class TerrainController : MonoBehaviour
     public int groundHeight;
 
     private int prevChunkNum = 0;
-    private Dictionary<int, GameObject> chunks;
+
+    private static int currentChunk = 0;
+    private static Dictionary<int, GameObject> chunks;
 
     private GameObject terrainParent;
 
@@ -40,12 +42,12 @@ public class TerrainController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int chunkNum = Mathf.RoundToInt(player.transform.position.x / 16);
+        currentChunk = Mathf.RoundToInt(player.transform.position.x / 16);
 
-        if (prevChunkNum != chunkNum)
-            GenerateChunk(chunkNum);
+        if (prevChunkNum != currentChunk)
+            GenerateChunk(currentChunk);
 
-        prevChunkNum = chunkNum;
+        prevChunkNum = currentChunk;
     }
 
     private void GenerateSpawn(string environment)
@@ -83,6 +85,7 @@ public class TerrainController : MonoBehaviour
                 ItemFactory.SetLocation(leftGround, newLocation);
 
                 GameObject goLeftGround = Instantiate(leftGround) as GameObject;
+                ItemFactory.SetName(goLeftGround, (chunkNum - 2).ToString());
                 ItemFactory.SetParent(goLeftGround, terrainParent);
                 Populate(goLeftGround);
                 chunks.Add(chunkNum - 2, goLeftGround);
@@ -104,11 +107,12 @@ public class TerrainController : MonoBehaviour
             if (!chunks.ContainsKey(chunkNum + 2))
             {
                 // Generating a new chunk to the right
-                GameObject rightGround = ItemFactory.CreateItem("Ground", (chunkNum + 2).ToString());
+                GameObject rightGround = ItemFactory.CreateItem("Ground");
                 Vector3 newLocation = new Vector3((chunkNum + 2) * 16, groundHeight);
                 ItemFactory.SetLocation(rightGround, newLocation);
 
                 GameObject goRightGround = Instantiate(rightGround) as GameObject;
+                ItemFactory.SetName(goRightGround, (chunkNum + 2).ToString());
                 ItemFactory.SetParent(goRightGround, terrainParent);
                 Populate(goRightGround);
                 chunks.Add(chunkNum + 2, goRightGround);
@@ -147,5 +151,11 @@ public class TerrainController : MonoBehaviour
 
         GameObject setAsChild = Instantiate(gameObject) as GameObject;
         ItemFactory.SetParent(setAsChild, parent);
+    }
+
+    public static GameObject GetCurrentChunk()
+    {
+        Debug.Log(currentChunk);
+        return chunks[currentChunk];
     }
 }

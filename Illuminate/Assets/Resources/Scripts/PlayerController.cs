@@ -1,18 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed;
     public float jumpPower;
     public bool isGrounded;
-    private int curInvSlot;
+    public GameObject progressBar;
+    public GameObject lightBar;
+    public GameObject energyBar;
 
     public LayerMask groundLayers;
     private Rigidbody2D rb;
 
+    private int curInvSlot;
     private GameObject collisionObject = null;
+
+    private Slider progressSlider;
+    private Slider lightLevel;
+    private Slider energyLevel;
 
     AudioController ac;
 
@@ -20,6 +28,11 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         ac = GameObject.Find("AudioController").GetComponent<AudioController>();
+        progressBar.SetActive(false);
+
+        progressSlider = progressBar.GetComponent<Slider>();
+        lightLevel = lightBar.GetComponent<Slider>();
+        energyLevel = energyBar.GetComponent<Slider>();
     }
 
     // Start is called before the first frame update
@@ -34,6 +47,18 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics2D.OverlapArea(new Vector2(transform.position.x - 1.5f, transform.position.y - 1.5f),
             new Vector2(transform.position.x + 0.5f, transform.position.y + 0.51f), groundLayers);
 
+
+        // Resolving light changes based relative to player
+        UpdateLight();
+        if (lightLevel.value == 0f)
+            Die();
+
+        // Resolving global energy changes in the world
+        UpdateEnergy();
+
+        /* +-------------------+
+         * |  Player Controls  |
+         * +-------------------+ */
         if (Input.GetKeyDown(KeyCode.Space))
             Jump();
 
@@ -52,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
         // Interact
         if (Input.GetKeyDown(KeyCode.E) && collisionObject != null)
-            InteractHandler.Interact(collisionObject);
+            StartCoroutine("Interact");
 }
 
     Vector2 computeVelocity(float axis = 0f)
@@ -83,5 +108,52 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Exit: " + collision.gameObject.name);
         collisionObject = null;
+    }
+
+    private void UpdateLight()
+    {
+        lightLevel.value = 0.33f;
+    }
+
+    private void UpdateEnergy()
+    {
+        energyLevel.value = EnergyHandler.GetFloat();
+    }
+
+    private void Die()
+    {
+        Application.Quit();
+    }
+
+    IEnumerator Interact()
+    {
+        progressBar.SetActive(true);
+
+        float totalHealth = InteractHandler.GetInteractTime(collisionObject);
+        float startProgress = InteractHandler.GetProgress(collisionObject);
+
+        float timeLeftToComplete = totalHealth - (totalHealth * startProgress);
+        float start = Time.time;
+        float current = Time.time;
+
+        while(Input.GetKey(KeyCode.E))
+        {
+            current = Time.time;
+            Debug.Log(totalHealth + " : " + (current - start) + " >= " + timeLeftToComplete);
+            progressSlider.value = (current - start) / timeLeftToComplete;
+
+            if (current - start >= timeLeftToComplete)
+            {
+                InteractHandler.Interact(collisionObject);
+                progressBar.SetActive(false);
+                StopCoroutine("Interact");
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        InteractHandler.SetProgress(collisionObject, startProgress + current - start);
+        progressBar.SetActive(false);
+        yield return null;
     }
 }
