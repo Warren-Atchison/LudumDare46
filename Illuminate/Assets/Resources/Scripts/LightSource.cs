@@ -10,6 +10,7 @@ public abstract class LightSource : MonoBehaviour
     public abstract float GetValue();
     public abstract bool Place();
     public abstract bool Remove();
+    public abstract float GetLightRadius();
 
     protected void UpdateTouchingGround()
     {

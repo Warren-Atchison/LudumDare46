@@ -37,6 +37,10 @@ public class Fire : LightSource
     {
         return energyHandler.AddSource(name, maxFireStrength);
     }
+    public override float GetLightRadius()
+    {
+        return lightRadius;
+    }
 
     public override float GetValue()
     {

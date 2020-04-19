@@ -122,7 +122,28 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateLight()
     {
-        lightLevel.value = 0.33f;
+        GameObject[] lights = GameObject.FindGameObjectsWithTag("LightSource");
+        float maxLightValue = float.MinValue;
+        float maxSourcePower = float.MinValue;
+        int maxIdx = -1;
+
+        for(int i = 0; i < lights.Length; i++)
+        {
+            float dist = Mathf.Abs(Vector3.Distance(lights[i].transform.position, transform.position));
+            float lightRad = lights[i].GetComponent<LightSource>().GetLightRadius();
+
+            if (lightRad - dist > maxLightValue)
+            {
+                maxLightValue = lightRad - dist;
+                maxSourcePower = lightRad;
+                maxIdx = i;
+            }
+        }
+
+        if (maxIdx != -1)
+            lightLevel.value = maxLightValue / maxSourcePower;
+        else
+            lightLevel.value = 0f;
     }
 
     private void UpdateEnergy()
@@ -132,7 +153,7 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-        Application.Quit();
+        Debug.Log("DEAD! You are dead.");
     }
 
     IEnumerator Interact()

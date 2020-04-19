@@ -41,8 +41,6 @@ public class EnergyHandler : MonoBehaviour
 
     private void TickAll()
     {
-        Debug.Log("Ticking All Sources");
-
         TickFires();
     }
 
@@ -69,7 +67,6 @@ public class EnergyHandler : MonoBehaviour
     {
         if (goName.Contains("Fire"))
         {
-            Debug.Log(fires.ToString());
             fires.Add(goName, value);
             return true;
         }
