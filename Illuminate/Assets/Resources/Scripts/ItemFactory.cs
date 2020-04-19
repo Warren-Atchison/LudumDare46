@@ -26,4 +26,9 @@ public class ItemFactory : MonoBehaviour
     {
         child.transform.parent = parent.transform;
     }
+
+    public static void SetName(GameObject go, string name)
+    {
+        go.name = name;
+    }
 }

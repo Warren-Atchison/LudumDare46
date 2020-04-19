@@ -9,6 +9,11 @@ public class Log : Item
         Destroy(this);
     }
 
+    public void Drop()
+    {
+        base.Drop("Log");
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.name.Equals("Player"))

@@ -10,6 +10,16 @@ public abstract class Item : Interactable
 
     public abstract void PickUp();
 
+    public void Drop(string itemName)
+    {
+        GameObject itemPrefab = ItemFactory.CreateItem(itemName);
+        Vector3 spawnLocation = GameObject.FindWithTag("Player").transform.position;
+        ItemFactory.SetLocation(itemPrefab, spawnLocation);
+
+        GameObject chunkInstance = Instantiate(itemPrefab) as GameObject;
+        ItemFactory.SetParent(chunkInstance, TerrainController.GetCurrentChunk());
+    }
+
     // Start is called before the first frame update
     void Start()
     {
