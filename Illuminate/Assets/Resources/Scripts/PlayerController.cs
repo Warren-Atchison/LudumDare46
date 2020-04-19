@@ -84,7 +84,10 @@ public class PlayerController : MonoBehaviour
 
         // Interact
         if (Input.GetKeyDown(KeyCode.E) && collisionObject != null)
+        {
+            rb.velocity = computeVelocity(0f);
             StartCoroutine("Interact");
+        }
 }
 
     Vector2 computeVelocity(float axis = 0f)
@@ -124,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateEnergy()
     {
-        energyLevel.value = EnergyHandler.GetFloat();
+        energyLevel.value = 0f;
     }
 
     private void Die()
