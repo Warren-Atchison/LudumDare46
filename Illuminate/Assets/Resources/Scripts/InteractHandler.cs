@@ -7,10 +7,12 @@ public class InteractHandler : MonoBehaviour
 
     public static void Interact(GameObject go)
     {
-        string entityName = go.name;
-        Debug.Log("Interacting with: " + entityName);
+        Debug.Log("Interacting with: " + go.name);
 
-        if (entityName.Contains("Tree"))
+        if (go.tag.Equals("Item"))
+            PickUp(go);
+
+        if (go.name.Contains("Tree"))
             Chop(go);
     }
 
@@ -27,9 +29,15 @@ public class InteractHandler : MonoBehaviour
         Destroy(tree);
     }
 
-    public static float GetHealth(GameObject go)
+    private static void PickUp(GameObject item)
     {
-        return go.GetComponent<Interactable>().GetHealth();
+        item.GetComponent<Item>().PickUp();
+        Destroy(item);
+    }
+
+    public static float GetInteractTime(GameObject go)
+    {
+        return go.GetComponent<Interactable>().GetInteractTime();
     }
 
     public static float GetProgress(GameObject go)

@@ -4,16 +4,9 @@ using UnityEngine;
 
 public class Log : Item
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void PickUp()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Destroy(this);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

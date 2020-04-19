@@ -5,30 +5,14 @@ using UnityEngine;
 public class DeadTree : Interactable
 {
     public GameObject chopText;
-    public float treeHealth;
+    public float chopTime;
     public float progress;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameObject go = collision.gameObject;
-        if (go.name.Equals("Player"))
-        {
-            chopText.SetActive(true);
 
-        }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         GameObject go = collision.gameObject;
@@ -38,9 +22,9 @@ public class DeadTree : Interactable
         }
     }
 
-    override public float GetHealth()
+    override public float GetInteractTime()
     {
-        return treeHealth;
+        return chopTime;
     }
 
     override public float GetProgress()
