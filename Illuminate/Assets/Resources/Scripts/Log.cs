@@ -6,7 +6,13 @@ public class Log : Item
 {
     public override void PickUp()
     {
-        Destroy(this);
+        InventoryHandler ih = GameObject.Find("InventoryHandler").GetComponent<InventoryHandler>();
+        if(ih.AddItem("Log"))
+        {
+            Debug.Log("Log Picked Up");
+            Destroy(this.gameObject);
+        }
+        
     }
 
     public void Drop()

@@ -23,12 +23,15 @@ public class PlayerController : MonoBehaviour
     private Slider lightLevel;
     private Slider energyLevel;
 
+    private InventoryHandler inventoryHandler;
+
     AudioController ac;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         ac = GameObject.Find("AudioController").GetComponent<AudioController>();
+        inventoryHandler = GameObject.Find("InventoryHandler").GetComponent<InventoryHandler>();
         progressBar.SetActive(false);
 
         isInteracting = false;
@@ -77,9 +80,12 @@ public class PlayerController : MonoBehaviour
 
             // Inventory slot switching
             if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-                Debug.Log(++curInvSlot);
+                inventoryHandler.ChangeInventoryIndex(1);
             if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-                Debug.Log(--curInvSlot);
+                inventoryHandler.ChangeInventoryIndex(-1);
+            // Inventory dropping
+            if (Input.GetKeyDown(KeyCode.Q))
+                inventoryHandler.DropItem();
         }
 
         // Interact

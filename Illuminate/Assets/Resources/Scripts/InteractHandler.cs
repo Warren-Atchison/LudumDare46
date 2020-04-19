@@ -39,7 +39,7 @@ public class InteractHandler : MonoBehaviour
     private static void PickUp(GameObject item)
     {
         item.GetComponent<Item>().PickUp();
-        Destroy(item);
+        //Destroy(item);
     }
 
     public static float GetInteractTime(GameObject go)
