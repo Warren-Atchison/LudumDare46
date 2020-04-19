@@ -131,12 +131,19 @@ public class TerrainController : MonoBehaviour
 
     private void Populate(GameObject parent)
     {
-        GameObject tree = ItemFactory.CreateItem("Tree", "Tree");
-        Vector3 treePos = new Vector3(parent.transform.position.x, parent.transform.position.y + 7.5f);
-        ItemFactory.SetLocation(tree, treePos);
+        float xPositionModifier = -8.0f;
+        for (int i = 0; i < Random.Range(1, 4); i++)
+        {
+            
+            GameObject tree = ItemFactory.CreateItem("Tree", "Tree");
+            Vector3 treePos = new Vector3(parent.transform.position.x +xPositionModifier, parent.transform.position.y + Random.Range(8.0f, 8.7f));
+            ItemFactory.SetLocation(tree, treePos);
 
-        GameObject treeAsChild = Instantiate(tree) as GameObject;
-        ItemFactory.SetParent(treeAsChild, parent);
+            GameObject treeAsChild = Instantiate(tree) as GameObject;
+            ItemFactory.SetParent(treeAsChild, parent);
+            xPositionModifier += Random.Range(1.5f, 5.0f);
+        }
+
     }
 
     private void Populate(GameObject parent, string prefab)

@@ -60,9 +60,12 @@ public class Fire : LightSource
     private void AddLogToFire()
     {
         float currentBurnTime = GetValue();
-        float newBurnTime = 0f;
-        if (currentBurnTime + (0.333f * maxFireStrength) > maxFireStrength)
+        float newBurnTime = currentBurnTime + (0.333f * maxFireStrength);
+
+        if (newBurnTime > maxFireStrength)
             newBurnTime = maxFireStrength;
+
+        Debug.Log(currentBurnTime + " : " + newBurnTime);
 
         energyHandler.UpdateSource(name, newBurnTime);
     }
@@ -73,7 +76,8 @@ public class Fire : LightSource
 
         if (collision.gameObject.tag.Equals("Item") && collision.gameObject.name.Contains("Log"))
             AddLogToFire();
-        else if (!collision.gameObject.tag.Equals("Player") && !collision.gameObject.tag.Equals("Ground"))
+
+        if (!collision.gameObject.tag.Equals("Player") && !collision.gameObject.tag.Equals("Ground"))
             Destroy(collision.gameObject);
     }
 }
