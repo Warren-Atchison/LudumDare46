@@ -21,7 +21,7 @@ public class InventoryHandler : MonoBehaviour
     public void Update()
     {
         InventoryFrames = GameObject.FindGameObjectsWithTag("InventorySlot");
-        Debug.Log("Loaded " + InventoryFrames.Length + "Frames");
+        //Debug.Log("Loaded " + InventoryFrames.Length + "Frames");
 
         if (InventoryFrames.Length > 0)
         {
