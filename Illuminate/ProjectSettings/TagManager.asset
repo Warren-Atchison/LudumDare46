@@ -8,6 +8,7 @@ TagManager:
   - Item
   - LightSource
   - InventorySlot
+  - InventorySelector
   layers:
   - Default
   - TransparentFX

@@ -80,9 +80,9 @@ public class PlayerController : MonoBehaviour
 
             // Inventory slot switching
             if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-                inventoryHandler.ChangeInventoryIndex(1);
-            if (Input.GetAxis("Mouse ScrollWheel") < 0f)
                 inventoryHandler.ChangeInventoryIndex(-1);
+            if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+                inventoryHandler.ChangeInventoryIndex(1);
             // Inventory dropping
             if (Input.GetKeyDown(KeyCode.Q))
                 inventoryHandler.DropItem();

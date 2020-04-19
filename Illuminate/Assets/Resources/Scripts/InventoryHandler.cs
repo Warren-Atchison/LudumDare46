@@ -11,11 +11,13 @@ public class InventoryHandler : MonoBehaviour
     private int CurrentIndex;
 
     private GameObject[] InventoryFrames;
+    private GameObject selector;
 
     public void Awake()
     {
          Inventory = new string[3] { " ", " ", " " };
         InventorySize = Inventory.Length;
+        selector = GameObject.FindGameObjectsWithTag("InventorySelector")[0];
 
     }
     public void Update()
@@ -75,6 +77,8 @@ public class InventoryHandler : MonoBehaviour
         {
             CurrentIndex += i;
         }
+
+        selector.transform.position = InventoryFrames[CurrentIndex].transform.position;
     }
 
     
