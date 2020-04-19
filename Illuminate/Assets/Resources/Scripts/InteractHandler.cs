@@ -14,6 +14,8 @@ public class InteractHandler : MonoBehaviour
 
         if (go.name.Contains("Tree"))
             Chop(go);
+        else if (go.name.Contains("House"))
+            Enter(go);
     }
 
     private static void Chop(GameObject tree)
@@ -27,6 +29,11 @@ public class InteractHandler : MonoBehaviour
         ItemFactory.SetParent(logObject, tree.transform.parent.gameObject);
 
         Destroy(tree);
+    }
+
+    private static void Enter(GameObject house)
+    {
+        Debug.Log("TODO: Create ENTER HOUSE; InteractHandler.Enter() line 34.");
     }
 
     private static void PickUp(GameObject item)

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeadTree : Interactable
+public class House : Interactable
 {
-    public float chopTime;
+    public float enterTime;
     public float progress;
 
     override public float GetInteractTime()
     {
-        return chopTime;
+        return enterTime;
     }
 
     override public float GetProgress()

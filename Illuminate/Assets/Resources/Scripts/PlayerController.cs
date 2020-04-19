@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
 
     private int curInvSlot;
+    private bool isInteracting;
     private GameObject collisionObject = null;
 
     private Slider progressSlider;
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         ac = GameObject.Find("AudioController").GetComponent<AudioController>();
         progressBar.SetActive(false);
+
+        isInteracting = false;
 
         progressSlider = progressBar.GetComponent<Slider>();
         lightLevel = lightBar.GetComponent<Slider>();
@@ -59,25 +62,32 @@ public class PlayerController : MonoBehaviour
         /* +-------------------+
          * |  Player Controls  |
          * +-------------------+ */
-        if (Input.GetKeyDown(KeyCode.Space))
-            Jump();
 
-        if (Input.GetKey(KeyCode.A))
-            rb.velocity = computeVelocity(-1f);
-        else if (Input.GetKey(KeyCode.D))
-            rb.velocity = computeVelocity(1f);
-        else if (isGrounded)
-            rb.velocity = computeVelocity(0f);
+        if (!isInteracting)
+        {
+            //if (Input.GetKeyDown(KeyCode.Space))
+                //Jump();
 
-        // Inventory slot switching
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            Debug.Log(++curInvSlot);
-        if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            Debug.Log(--curInvSlot);
+            if (Input.GetKey(KeyCode.A))
+                rb.velocity = computeVelocity(-1f);
+            else if (Input.GetKey(KeyCode.D))
+                rb.velocity = computeVelocity(1f);
+            else if (isGrounded)
+                rb.velocity = computeVelocity(0f);
+
+            // Inventory slot switching
+            if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+                Debug.Log(++curInvSlot);
+            if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+                Debug.Log(--curInvSlot);
+        }
 
         // Interact
         if (Input.GetKeyDown(KeyCode.E) && collisionObject != null)
+        {
+            rb.velocity = computeVelocity(0f);
             StartCoroutine("Interact");
+        }
 }
 
     Vector2 computeVelocity(float axis = 0f)
@@ -112,48 +122,71 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateLight()
     {
-        lightLevel.value = 0.33f;
+        GameObject[] lights = GameObject.FindGameObjectsWithTag("LightSource");
+        float maxLightValue = float.MinValue;
+        float maxSourcePower = float.MinValue;
+        int maxIdx = -1;
+
+        for(int i = 0; i < lights.Length; i++)
+        {
+            float dist = Mathf.Abs(Vector3.Distance(lights[i].transform.position, transform.position));
+            float lightRad = lights[i].GetComponent<LightSource>().GetLightRadius();
+
+            if (lightRad - dist > maxLightValue)
+            {
+                maxLightValue = lightRad - dist;
+                maxSourcePower = lightRad;
+                maxIdx = i;
+            }
+        }
+
+        if (maxIdx != -1)
+            lightLevel.value = maxLightValue / maxSourcePower;
+        else
+            lightLevel.value = 0f;
     }
 
     private void UpdateEnergy()
     {
-        energyLevel.value = EnergyHandler.GetFloat();
+        energyLevel.value = 0f;
     }
 
     private void Die()
     {
-        Application.Quit();
+        Debug.Log("DEAD! You are dead.");
     }
 
     IEnumerator Interact()
     {
+        isInteracting = true;
         progressBar.SetActive(true);
 
-        float totalHealth = InteractHandler.GetInteractTime(collisionObject);
+        float totalTimeToComplete = InteractHandler.GetInteractTime(collisionObject);
         float startProgress = InteractHandler.GetProgress(collisionObject);
 
-        float timeLeftToComplete = totalHealth - (totalHealth * startProgress);
+        float timeLeftToComplete = totalTimeToComplete - (totalTimeToComplete * startProgress);
         float start = Time.time;
         float current = Time.time;
 
         while(Input.GetKey(KeyCode.E))
         {
             current = Time.time;
-            Debug.Log(totalHealth + " : " + (current - start) + " >= " + timeLeftToComplete);
-            progressSlider.value = (current - start) / timeLeftToComplete;
+            progressSlider.value = ((startProgress * totalTimeToComplete) + current - start) / totalTimeToComplete;
 
             if (current - start >= timeLeftToComplete)
             {
                 InteractHandler.Interact(collisionObject);
                 progressBar.SetActive(false);
+                isInteracting = false;
                 StopCoroutine("Interact");
             }
 
             yield return new WaitForEndOfFrame();
         }
 
-        InteractHandler.SetProgress(collisionObject, startProgress + current - start);
+        InteractHandler.SetProgress(collisionObject, startProgress + ((current - start)/totalTimeToComplete));
         progressBar.SetActive(false);
+        isInteracting = false;
         yield return null;
     }
 }
