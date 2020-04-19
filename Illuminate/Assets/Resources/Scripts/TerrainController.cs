@@ -42,7 +42,7 @@ public class TerrainController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentChunk = Mathf.RoundToInt(player.transform.position.x / 16);
+        currentChunk = Mathf.RoundToInt(player.transform.position.x / 32.875f);
 
         if (prevChunkNum != currentChunk)
             GenerateChunk(currentChunk);
@@ -52,11 +52,11 @@ public class TerrainController : MonoBehaviour
 
     private void GenerateSpawn(string environment)
     {
-        int[] spawnChunks = { -2, -1, 0, 1, 2 };
+        int[] spawnChunks = {-1, 0, 1};//changed from -2 to 2
         foreach(int chunkNum in spawnChunks)
         {
             GameObject chunk = ItemFactory.CreateItem("Ground", chunkNum.ToString());
-            Vector3 location = new Vector3(chunkNum * 16, groundHeight);
+            Vector3 location = new Vector3(chunkNum * 32.875f, groundHeight);
             ItemFactory.SetLocation(chunk, location);
 
             GameObject chunkInstance = Instantiate(chunk) as GameObject;
@@ -66,6 +66,10 @@ public class TerrainController : MonoBehaviour
             {
                 if(environment.Equals("Forest"))
                     Populate(chunkInstance, "House");
+            }
+            else
+            {
+                Populate(chunkInstance);
             }
 
             chunks.Add(chunkNum, chunkInstance);
@@ -81,7 +85,7 @@ public class TerrainController : MonoBehaviour
             {
                 // Generating a new chunk to the left
                 GameObject leftGround = ItemFactory.CreateItem("Ground", (chunkNum - 2).ToString());
-                Vector3 newLocation = new Vector3((chunkNum - 2) * 16, groundHeight);
+                Vector3 newLocation = new Vector3((chunkNum - 2) * 32.875f, groundHeight);
                 ItemFactory.SetLocation(leftGround, newLocation);
 
                 GameObject goLeftGround = Instantiate(leftGround) as GameObject;
@@ -95,7 +99,7 @@ public class TerrainController : MonoBehaviour
                 chunks[chunkNum - 2].gameObject.SetActive(true);
             }
 
-            Vector3 destroyLocation = new Vector3((chunkNum + 3) * 16, groundHeight);
+            Vector3 destroyLocation = new Vector3((chunkNum + 3) * 32.875f, groundHeight);
             Collider2D collider = Physics2D.OverlapCircle(destroyLocation, 2);
             if (collider != null)
                 collider.gameObject.SetActive(false);
@@ -104,25 +108,25 @@ public class TerrainController : MonoBehaviour
         // Player is moving right
         if (prevChunkNum < chunkNum)
         {
-            if (!chunks.ContainsKey(chunkNum + 2))
+            if (!chunks.ContainsKey(chunkNum + 1))
             {
                 // Generating a new chunk to the right
                 GameObject rightGround = ItemFactory.CreateItem("Ground");
-                Vector3 newLocation = new Vector3((chunkNum + 2) * 16, groundHeight);
+                Vector3 newLocation = new Vector3((chunkNum + 1) * 32.875f, groundHeight);
                 ItemFactory.SetLocation(rightGround, newLocation);
 
                 GameObject goRightGround = Instantiate(rightGround) as GameObject;
-                ItemFactory.SetName(goRightGround, (chunkNum + 2).ToString());
+                ItemFactory.SetName(goRightGround, (chunkNum + 1).ToString());
                 ItemFactory.SetParent(goRightGround, terrainParent);
                 Populate(goRightGround);
-                chunks.Add(chunkNum + 2, goRightGround);
+                chunks.Add(chunkNum + 1, goRightGround);
             }
             else
             {
-                chunks[chunkNum + 2].SetActive(true);
+                chunks[chunkNum + 1].SetActive(true);
             }
 
-            Vector3 destroyLocation = new Vector3((chunkNum - 3) * 16, groundHeight);
+            Vector3 destroyLocation = new Vector3((chunkNum - 3) * 32.875f, groundHeight);
             Collider2D collider = Physics2D.OverlapCircle(destroyLocation, 2);
             if (collider != null)
                 collider.gameObject.SetActive(false);
@@ -131,8 +135,9 @@ public class TerrainController : MonoBehaviour
 
     private void Populate(GameObject parent)
     {
-        float xPositionModifier = -8.0f;
-        for (int i = 0; i < Random.Range(1, 4); i++)
+        float xPositionModifier = -15.0f;
+        int numberOfTrees = Random.Range(3, 9);
+        for (int i = 0; i < numberOfTrees; i++)
         {
             
             GameObject tree = ItemFactory.CreateItem("Tree", "Tree");
@@ -141,7 +146,7 @@ public class TerrainController : MonoBehaviour
 
             GameObject treeAsChild = Instantiate(tree) as GameObject;
             ItemFactory.SetParent(treeAsChild, parent);
-            xPositionModifier += Random.Range(1.5f, 5.0f);
+            xPositionModifier += Random.Range((32 / (float)numberOfTrees)-2f, (32/(float)numberOfTrees)+1);
         }
 
     }
