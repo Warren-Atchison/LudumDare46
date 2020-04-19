@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryHandler : MonoBehaviour
 {
@@ -9,12 +10,27 @@ public class InventoryHandler : MonoBehaviour
 
     private int CurrentIndex;
 
+    private GameObject[] InventoryFrames;
+
     public void Awake()
     {
          Inventory = new string[3] { " ", " ", " " };
         InventorySize = Inventory.Length;
-    }
 
+    }
+    public void Update()
+    {
+        InventoryFrames = GameObject.FindGameObjectsWithTag("InventorySlot");
+        Debug.Log("Loaded " + InventoryFrames.Length + "Frames");
+
+        if (InventoryFrames.Length > 0)
+        {
+            for (int i = 0; i < InventoryFrames.Length; i++)
+            {
+                InventoryFrames[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/" + Inventory[i]);
+            }
+        }
+    }
     public bool AddItem(string itemName)
     { 
             for(int i = 0; i < InventorySize; i++)
