@@ -7,6 +7,8 @@ public class Fire : LightSource
     public float maxFireStrength;
     public float curFireStrength;
     public float lightRadius;
+    public float checkFireTime;
+    public float progress;
 
     private GameObject energyHandlerGameObject;
     private EnergyHandler energyHandler;
@@ -55,6 +57,21 @@ public class Fire : LightSource
     public override bool Remove()
     {
         throw new System.NotImplementedException();
+    }
+
+    public override float GetInteractTime()
+    {
+        return checkFireTime;
+    }
+
+    public override float GetProgress()
+    {
+        return progress;
+    }
+
+    public override void SetProgress(float progress)
+    {
+        this.progress = progress;
     }
 
     private void AddLogToFire()

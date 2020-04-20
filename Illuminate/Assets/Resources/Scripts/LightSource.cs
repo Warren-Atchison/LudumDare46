@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class LightSource : MonoBehaviour
+public abstract class LightSource : Interactable
 {
     private bool touchingGround;
 
