@@ -38,11 +38,33 @@ public class AudioController : MonoBehaviour
 
         return sfx;
     }
+    public string GetInteractSoundClip(GameObject go)
+    {
+        string modifiedName = go.name;
+        if (modifiedName.Contains("("))
+        {
+            modifiedName = modifiedName.Remove(go.name.IndexOf('('));
+        }
+        Debug.Log("Modified Name " + modifiedName);
+        return modifiedName;
+    }
 
     // Function to play a single sound clip
     public void Play(string clipName)
     {
         // Sets the clip played by the sfx audio source to the input clip
         sfxSource.PlayOneShot(soundEffects[clipName]);
+    }
+    public void Pause()
+    {
+        sfxSource.Pause();
+    }
+    public void UnPause()
+    {
+        sfxSource.UnPause();
+    }
+    public void Stop()
+    {
+        sfxSource.Stop();
     }
 }

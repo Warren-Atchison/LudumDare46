@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d2bdb6da42ca44d8c973735cf22584, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chopTime: 3
+  chopTime: 2.8
   progress: 0
 --- !u!212 &8755007787586609863
 SpriteRenderer:

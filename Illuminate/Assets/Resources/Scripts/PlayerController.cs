@@ -174,21 +174,45 @@ public class PlayerController : MonoBehaviour
         float start = Time.time;
         float current = Time.time;
 
+        bool soundClipPlaying = false;
+        string soundClipName = ac.GetInteractSoundClip(collisionObject);
+        Debug.Log("<<<<<<<<<<<<<<<<<<<<<<<" + soundClipName);
+        
+
         while(Input.GetKey(KeyCode.E))
         {
             current = Time.time;
             progressSlider.value = ((startProgress * totalTimeToComplete) + current - start) / totalTimeToComplete;
+            try
+            {
+                if (soundClipPlaying == false)
+                {
+                    ac.Play(soundClipName);
+                    soundClipPlaying = true;
+                }
+            }
+            catch 
+            {
+                Debug.Log("Item does not have a sound clip associated with it");
+            }
+
 
             if (current - start >= timeLeftToComplete)
             {
                 InteractHandler.Interact(collisionObject);
                 progressBar.SetActive(false);
                 isInteracting = false;
+                ac.Stop();
+                soundClipPlaying = false;
                 StopCoroutine("Interact");
             }
 
             yield return new WaitForEndOfFrame();
         }
+        ac.Pause();
+        ac.Stop();
+        soundClipPlaying = false;
+        
 
         InteractHandler.SetProgress(collisionObject, startProgress + ((current - start)/totalTimeToComplete));
         progressBar.SetActive(false);
