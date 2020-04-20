@@ -128,6 +128,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3536131679791871440, guid: 29b28b80ead04dc4889772b5cba8b440,
+        type: 3}
+      propertyPath: checkFireTime
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3758400986630822956, guid: 29b28b80ead04dc4889772b5cba8b440,
         type: 3}
       propertyPath: m_LocalPosition.x
